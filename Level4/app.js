@@ -23,6 +23,7 @@ var AppointmentView = Backbone.View.extend({
 	},
 	initialize: function(){
 		this.model.on('change', this.render, this);
+		this.model.on('destroy', this.remove, this);
 	},
 	cancel: function(){
 		this.model.cancel();
@@ -33,6 +34,9 @@ var AppointmentView = Backbone.View.extend({
 	render: function(){
 		var attributes = this.model.toJSON();
 		this.$el.html(this.template(attributes));
+	},
+	remove: function(){
+		this.$el.remove();
 	}
 });
 
