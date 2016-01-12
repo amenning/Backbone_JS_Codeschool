@@ -1,18 +1,31 @@
-var Appointment = Backbone.Model.extend({});
+var Appointment = Backbone.Model.extend({
+	defaults: {
+		cancelled : false
+	},
+	cancel: function(){
+		this.set({'cancelled' : true});
+		console.log(this.get('cancelled'));
+	}	
+});
 var appointment = new Appointment();
 appointment.set('title', 'My knee hurts');
+
 
 var AppointmentView = Backbone.View.extend({
 	tagName: 'li',
 	className: 'appointment',
-	template: _.template('<span><%= title %></span>' + '<p><a href="#" id="cancelLink">Cancelled</a></p>'),
+	template: _.template('<span class="<% if(cancelled) print("cancelled") %>">' +
+                        '<%= title %></span>' + ' ' +
+                        '<a href="#">x</a>'),
 	events: { 
 		"dblclick span": "alertTitle",
-		'click a': 'cancelAppointment'
+		"click a": "cancel"
 	},
-	cancelAppointment: function(){
-		this.model.set({'cancelled' : true});
-		console.log(this.model.get('cancelled'));
+	initialize: function(){
+		this.model.on('change', this.render, this);
+	},
+	cancel: function(){
+		this.model.cancel();
 	},
 	alertTitle: function(){
 		alert(this.model.get('title'));
